@@ -1,16 +1,11 @@
-function SearchArgs(searchText, whatToSearch, metadataToReturn, propertiesToReturn, pageToStartOn, totalPagesToReturn) {
+function SearchArgs(searchText, metadataToReturn, propertiesToReturn, pageToStartOn, totalPagesToReturn) {
     this.searchText = searchText;
-    this.srwhat;
     this.srinfo;
     this.srprop;
     this.sroffset;
     this.srlimit;
 
-    if (whatToSearch) {
-        this.srwhat = whatToSearch;
-    } else {
-        this.srwhat = "title";
-    }
+
     if (metadataToReturn) {
         this.srinfo = metadataToReturn;
     } else {
@@ -19,7 +14,7 @@ function SearchArgs(searchText, whatToSearch, metadataToReturn, propertiesToRetu
     if (propertiesToReturn) {
         this.srprop = propertiesToReturn;
     } else {
-        this.srprop = "snippet|hasrelated";
+        this.srprop = "snippet";
     }
     if (pageToStartOn) {
         this.sroffset = pageToStartOn;
@@ -29,11 +24,12 @@ function SearchArgs(searchText, whatToSearch, metadataToReturn, propertiesToRetu
     if (totalPagesToReturn) {
         this.srlimit = totalPagesToReturn;
     } else {
-        this.srlimit = "1";
+        this.srlimit = "20";
     }
 }
 
 function WikipediaSearch(searchParams) {
+    var currentSearch = this;
     this.searchArgs = searchParams;
     this.searchResults;
 
@@ -46,27 +42,50 @@ function WikipediaSearch(searchParams) {
 
         return "action=query&list=search&" +
             "srsearch=" + srsearch + "&" +
-            "srwhat=" + searchArgs.srwhat + "&" +
             "srinfo=" + searchArgs.srinfo + "&" +
             "srprop=" + searchArgs.srprop + "&" +
             "sroffset=" + searchArgs.sroffset + "&" +
-            "srlimit=" + searchArgs.srlimit;
+            "srlimit=" + searchArgs.srlimit + "&" +
+            "format=json";
+
     }
 
     this.apiCall = createAPICall(this.searchArgs);
 
+    var parseResultsJSON = function(resultsJSON) {
+        var searchResults = resultsJSON.query.search
+        var parsedResults = [];
+
+        for (var i = 0; i < searchResults.length; i++) {
+            var currentResult = {
+                title: searchResults[i].title,
+                snippet: searchResults[i].snippet,
+                url: encodeURIComponent(searchResults.title),
+            }
+            parsedResults.push(currentResult);
+        }
+        currentSearch.searchResults = parsedResults;
+        console.log("Parsed Results finished" + currentSearch.searchResults);
+    }
+
     this.searchWikipedia = function() {
-        var wikipediaURL = "https://en.wikipedia.org/w/api.php?";
-        $.getJSON(wikipediaURL + this.apiCall, function(value) {
-            this.searchResults = value;
+        return new Promise(function(resolve, reject) {
+            var wikipediaURL = "https://en.wikipedia.org/w/api.php?";
+            $.getJSON(wikipediaURL + currentSearch.apiCall + "&callback=?", function(value) {
+                console.log("callback works");
+                var parsedReuslts = parseResultsJSON(value);
+                resolve(parsedReuslts);
+            });
         });
     }
-}
 
-var setResultsHTML = function(results) {
-    $("results").innerHTML = results;
 }
 
 $(document).ready(function() {
-
+    console.log("Document Loaded");
+    var searchArgs = new SearchArgs("Sample");
+    var search = new WikipediaSearch(searchArgs);
+    search.searchWikipedia().then(function() {
+        console.log("Results in line" + search.searchResults)
+    });
 });

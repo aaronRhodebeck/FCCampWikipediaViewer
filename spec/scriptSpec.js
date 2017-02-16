@@ -13,7 +13,6 @@ describe("SearchArgs", function() {
     it("should take up to six values", function() {
         var testArgs = new SearchArgs(
             "Search Text",
-            "Search Area",
             "Metadata Requested",
             "Properties Requested",
             "Starting Page",
@@ -21,7 +20,6 @@ describe("SearchArgs", function() {
         );
 
         expect(testArgs.searchText).toBe("Search Text");
-        expect(testArgs.srwhat).toBe("Search Area");
         expect(testArgs.srinfo).toBe("Metadata Requested");
         expect(testArgs.srprop).toBe("Properties Requested");
         expect(testArgs.sroffset).toBe("Starting Page");
@@ -31,11 +29,10 @@ describe("SearchArgs", function() {
         var testArgs = new SearchArgs("Search Text");
 
         expect(testArgs.searchText).toBe("Search Text");
-        expect(testArgs.srwhat).toBe("title");
         expect(testArgs.srinfo).toBe("suggestion");
-        expect(testArgs.srprop).toBe("snippet|hasrelated");
+        expect(testArgs.srprop).toBe("snippet");
         expect(testArgs.sroffset).toBe("0");
-        expect(testArgs.srlimit).toBe("1");
+        expect(testArgs.srlimit).toBe("20");
     })
 });
 
@@ -52,19 +49,26 @@ describe("WikipediaSearch", function() {
         expect(apiCall).toEqual(
             "action=query&list=search&" +
             "srsearch=wikipedia%20search&" +
-            "srwhat=title&" +
             "srinfo=suggestion&" +
-            "srprop=snippet|hasrelated&" +
+            "srprop=snippet&" +
             "sroffset=0&" +
-            "srlimit=1"
+            "srlimit=20&" +
+            "format=json"
         );
     });
 
-    it("should call the wikipedia search API", function() {
+    it("searchWikipedia should call the wikipedia search API", function() {
         spyOn($, "getJSON");
-        testSearch.searchWikipedia();
+        var results = testSearch.searchWikipedia();
 
         expect($.getJSON).toHaveBeenCalled();
+        expect(results).not.toBe(null || undefined);
     });
 
+    it("calling searchWikipedia should set searchResults property", function(done) {
+        testSearch.searchWikipedia().then(function() {
+            expect(testSearch.searchResults).not.toBe(undefined);
+            done();
+        });
+    });
 });
