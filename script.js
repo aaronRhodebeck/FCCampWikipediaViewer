@@ -81,11 +81,18 @@ function WikipediaSearch(searchParams) {
 
 }
 
+function setResultsHTML(parsedResults, divToAddTo) {
+    var resultsTemplate = $.
+    var totalResults = parsedResults.length;
+    for (var i = 0; i < totalResults; i++) {
+        parsedResults[i].title
+    }
+}
+
 $(document).ready(function() {
-    console.log("Document Loaded");
     var searchArgs = new SearchArgs("Sample");
     var search = new WikipediaSearch(searchArgs);
     search.searchWikipedia().then(function() {
-        console.log("Results in line" + search.searchResults)
+        setResultsHTML(search.searchResults);
     });
 });
