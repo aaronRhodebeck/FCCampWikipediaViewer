@@ -1,0 +1,50 @@
+body {
+    background: rgb(57, 61, 63);
+    color: rgb(7, 8, 8);
+    font-family: "Droid Sans";
+}
+
+.result-title {
+    color: rgb(7, 8, 8);
+}
+
+label {
+    font-size: 1.6em;
+    vertical-align: bottom;
+    margin-bottom: 0px;
+}
+
+input {
+    padding-left: 3px;
+    font-size: 1.3em;
+    width: 40vw;
+    min-width: 200px;
+    background: rgb(159, 195, 216);
+}
+
+input::-ms-clear {
+    display: none;
+}
+
+.btn-search {
+    margin-left: -43px;
+    margin-bottom: 3px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.well {
+    background: rgb(104, 141, 163);
+    color: rgb(7, 8, 8);
+    border: 0px;
+    box-shadow: 2px 2px 6px rgba(159, 195, 216, .8)
+}
+
+#wholePage {
+    margin-top: 4vh;
+}
+
+#randomArticleButton {
+    width: 75vw;
+    margin: 0 auto;
+    margin-top: 10px;
+}
