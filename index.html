@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" media="all" />
     <link rel="stylesheet" href="stylesheet.css">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/themes/black-tie/jquery-ui.min.js" type="text/javascript"></script>
     <script src="script.js"></script>
 </head>
 
@@ -16,18 +16,21 @@
                 <h3 class="result-title-heading">
                     <a class="result-title" href="#" target="_blank">Lorem</a>
                 </h3>
-                <p class="result-snippet">Lorem ipsum</p>
+                <p class="result-snippet"> </p>
             </div>
         </div>
     </template>
 
     <div id="wholePage" class="fluid-container">
         <div class="well col-sm-10 col-sm-offset-1">
-            <div class="ui-widget ">
+            <div>
                 <label for="search">Search Wikipedia:</label>
-                <input id "searchText" placeholder="Search text...">
-                <button class="btn btn-search">
+                <input id="searchText" class="" placeholder="Search text...">
+                <button id="searchButton" class="btn btn-search">
                     <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <button id="randomArticleButton" class="btn">
+                    Random Article
                 </button>
             </div>
             <div id="resultsContainer">

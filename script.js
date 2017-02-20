@@ -1,31 +1,31 @@
-function SearchArgs(searchText, metadataToReturn, propertiesToReturn, pageToStartOn, totalPagesToReturn) {
+function SearchArgs(searchText, propertiesToReturn, totalPagesToReturn, metadataToReturn, pageToStartOn, ) {
     this.searchText = searchText;
     this.srinfo;
     this.srprop;
     this.sroffset;
     this.srlimit;
 
-
-    if (metadataToReturn) {
-        this.srinfo = metadataToReturn;
-    } else {
-        this.srinfo = "suggestion";
-    }
     if (propertiesToReturn) {
         this.srprop = propertiesToReturn;
     } else {
         this.srprop = "snippet";
-    }
-    if (pageToStartOn) {
-        this.sroffset = pageToStartOn;
-    } else {
-        this.sroffset = "0";
     }
     if (totalPagesToReturn) {
         this.srlimit = totalPagesToReturn;
     } else {
         this.srlimit = "20";
     }
+    if (metadataToReturn) {
+        this.srinfo = metadataToReturn;
+    } else {
+        this.srinfo = "suggestion";
+    }
+    if (pageToStartOn) {
+        this.sroffset = pageToStartOn;
+    } else {
+        this.sroffset = "0";
+    }
+
 }
 
 function WikipediaSearch(searchParams) {
@@ -65,14 +65,12 @@ function WikipediaSearch(searchParams) {
             parsedResults.push(currentResult);
         }
         currentSearch.searchResults = parsedResults;
-        console.log("Parsed Results finished" + currentSearch.searchResults);
     }
 
     this.searchWikipedia = function() {
         return new Promise(function(resolve, reject) {
             var wikipediaURL = "https://en.wikipedia.org/w/api.php?";
             $.getJSON(wikipediaURL + currentSearch.apiCall + "&callback=?", function(value) {
-                console.log("callback works");
                 var parsedReuslts = parseResultsJSON(value);
                 resolve(parsedReuslts);
             });
@@ -99,10 +97,78 @@ function setResultsHTML(parsedResults) {
     }
 }
 
-$(document).ready(function() {
-    var searchArgs = new SearchArgs("Sample");
+function readSearchField() {
+    return $("#searchText").val();
+}
+
+function whenEnterIsPressed() {
+    return new Promise(function(resolve, reject) {
+        $(document).keypress(function(e) {
+            if (e.which == 13) {
+                resolve();
+            }
+        });
+    });
+
+}
+
+function clearDiv(divToClear) {
+    $(divToClear).empty();
+}
+
+function submitSearch() {
+    clearDiv("#results");
+    var searchText = readSearchField();
+    var searchArgs = new SearchArgs(searchText);
     var search = new WikipediaSearch(searchArgs);
     search.searchWikipedia().then(function() {
         setResultsHTML(search.searchResults);
     });
+}
+
+function goToRandomArticle() {
+    window.location = "https://en.wikipedia.org/wiki/Special:Random";
+}
+
+$(document).ready(function() {
+    $("#searchText").on("keypress", function() {
+        whenEnterIsPressed().then(function() {
+            submitSearch();
+        });
+    });
+
+    $("#searchButton").on("click", function() {
+        clearDiv("#results");
+        var searchText = readSearchField();
+        var searchArgs = new SearchArgs(searchText, "title");
+        var search = new WikipediaSearch(searchArgs);
+        search.searchWikipedia().then(function() {
+            setResultsHTML(search.searchResults);
+        });
+    });
+
+    $("#randomArticleButton").on("click", function() {
+        goToRandomArticle();
+    })
+
+    /* Autocomplete not working, will come back if I have a chance
+    $("#searchText").on("keypress", function() {
+        var currentText = $(this).val();
+        if (currentText.length > 2) {
+            var autoCompleteEntries = [];
+            var searchArgs = new SearchArgs(currentText, "title", 8);
+            var titleSearch = new WikipediaSearch(searchArgs)
+            titleSearch.searchWikipedia().then(function() {
+                var numberOfTitles = titleSearch.searchResults.length;
+                for (var i = 0; i < numberOfTitles; i++) {
+                    autoCompleteEntries.push(titleSearch.searchResults[i].title);
+                }
+            });
+        }
+        $("#searchText").autocomplete({
+            source: autoCompleteEntries,
+            minLength: 3
+        });
+    });
+    */
 });

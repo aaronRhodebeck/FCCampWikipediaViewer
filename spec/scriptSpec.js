@@ -13,10 +13,10 @@ describe("SearchArgs", function() {
     it("should take up to six values", function() {
         var testArgs = new SearchArgs(
             "Search Text",
-            "Metadata Requested",
             "Properties Requested",
+            "Total Pages",
+            "Metadata Requested",
             "Starting Page",
-            "Total Pages"
         );
 
         expect(testArgs.searchText).toBe("Search Text");
