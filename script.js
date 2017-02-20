@@ -1,4 +1,4 @@
-function SearchArgs(searchText, propertiesToReturn, totalPagesToReturn, metadataToReturn, pageToStartOn, ) {
+function SearchArgs(searchText, propertiesToReturn, totalPagesToReturn, metadataToReturn, pageToStartOn) {
     this.searchText = searchText;
     this.srinfo;
     this.srprop;
@@ -92,7 +92,7 @@ function setResultsHTML(parsedResults) {
         $title.html(parsedResults[i].title);
         var articleURL = wikipediaURL + parsedResults[i].title.replace(/ /g, "_");
         $title.attr("href", articleURL);
-        $snippet.html(parsedResults[i].snippet);
+        $snippet.html(parsedResults[i].snippet + "...");
         $("#results").append($template);
     }
 }
@@ -140,7 +140,7 @@ $(document).ready(function() {
     $("#searchButton").on("click", function() {
         clearDiv("#results");
         var searchText = readSearchField();
-        var searchArgs = new SearchArgs(searchText, "title");
+        var searchArgs = new SearchArgs(searchText);
         var search = new WikipediaSearch(searchArgs);
         search.searchWikipedia().then(function() {
             setResultsHTML(search.searchResults);
